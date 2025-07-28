@@ -1,4 +1,4 @@
-pattern { testsetststs
+pattern {
 	metadata {
 		id = "1d2810b14fa12200609b92918110c7a766"
 		name = "Linux Server"
@@ -127,7 +127,7 @@ pattern { testsetststs
 		}
 		step {
 			name = "Linux - Storage"
-			ref {refid = "303407279f2032001d753758442e708c"}
+			ref {refid = "303407279f2032001d753758442e708c55757565"}
 		}
 		step {
 			name = "Linux - Cloud"
