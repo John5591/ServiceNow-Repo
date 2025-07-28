@@ -1,0 +1,137 @@
+pattern {
+	metadata {
+		id = "1d2810b14fa12200609b92918110c7a7"
+		name = "Linux Server"
+		description = ""
+		citype = "cmdb_ci_linux_server"
+	}
+	identification {
+		name = "discovery"
+		entry_point {type = "*"}
+		find_process_strategy {strategy = NONE}
+		step {
+			name = "Unix\\Linux Name Formatting"
+			ref {refid = "46d81a979f10320055063758442e707f"}
+		}
+		step {
+			name = "Insert OS name, version and name to cmdb_ci_linux_server"
+			transform {
+				src_table_name = "cmdb_ci_linux_server"
+				target_table_name = "cmdb_ci_linux_server"
+				operation {
+					set_field {
+						field_name = "os_version"
+						value = get_attr {"osVersion"}
+					}
+					set_field {
+						field_name = "name"
+						value = get_attr {"formattedHostname"}
+					}
+					set_field {
+						field_name = "host_name"
+						value = get_attr {"formattedHostname"}
+					}
+				}
+			}
+		}
+		step {
+			name = "Linux - Identity"
+			ref {refid = "a273cfe39f2032001d753758442e70b7"}
+		}
+		step {
+			name = "DNS"
+			ref {refid = "ede27fe5db652200868a7c841f961984"}
+		}
+		step {
+			name = "Get DNS Names for IPs"
+			ref {refid = "4bc39226db968010b0fa5635dc96190e"}
+		}
+		step {
+			name = "Get DNS name for ManagementIP"
+			if {
+				condition = all {
+					eq {
+						get_attr {"shouldIncludeDomain"}
+						"true"
+					}
+					is_not_empty {get_attr {"cmdb_ci_dns_name[1].name"}}
+				}
+				on_true = set_attr {
+					"DNSName"
+					eval {"javascript: var rtrn ='';
+					var table =${cmdb_ci_dns_name};
+					var ip=${computer_system.managementIP};
+					for(var i=0;i < table.size();i++){
+   					var map=table.get(i);
+   					if(map.get('ip_address') == ip){
+      				rtrn =map.get('name');
+      				break;
+   				}
+			}
+			rtrn =rtrn;"}
+				}
+				on_false = nop {}
+			}
+		}
+		step {
+			name = "Set DNS name to name for Linux Server"
+			if {
+				condition = all {
+					is_not_empty {get_attr {"DNSName"}}
+					eq {
+						get_attr {"isSshTrusted"}
+						"false"
+					}
+				}
+				on_true = set_attr {
+					"cmdb_ci_linux_server[*].name"
+					get_attr {"DNSName"}
+				}
+				on_false = nop {}
+			}
+		}
+		step {
+			name = "Linux - Find FQDN"
+			ref {refid = "5e1243e39f2032001d753758442e7041"}
+		}
+		step {
+			name = "Linux - Distribution"
+			ref {refid = "fe32c7e39f2032001d753758442e7065"}
+		}
+		step {
+			name = "UNIX - OS Uptime"
+			ref {refid = "80d2cbe39f2032001d753758442e7092"}
+		}
+		step {
+			name = "Update start date on Linux CI"
+			set_attr {
+				"cmdb_ci_linux_server[*].start_date"
+				get_attr {"start_date"}
+			}
+		}
+		step {
+			name = "Linux - Memory"
+			ref {refid = "4103cbe39f2032001d753758442e709a"}
+		}
+		step {
+			name = "Linux - Memory Modules"
+			ref {refid = "dc334fe39f2032001d753758442e70b7"}
+		}
+		step {
+			name = "Linux - Network ARP Tables"
+			ref {refid = "84538fe39f2032001d753758442e7086"}
+		}
+		step {
+			name = "Linux - CPU"
+			ref {refid = "e69343279f2032001d753758442e7067"}
+		}
+		step {
+			name = "Linux - Storage"
+			ref {refid = "303407279f2032001d753758442e708c"}
+		}
+		step {
+			name = "Linux - Cloud"
+			ref {refid = "4660f86edb057200c12ef9361d96190c"}
+		}
+	}
+}
