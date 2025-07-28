@@ -127,7 +127,7 @@ pattern {
 		}
 		step {
 			name = "Linux - Storage"
-			ref {refid = "303407279f2032001d753758442e708c55757565"}
+			ref {refid = "303407279f2032001d753758442e7TEST"}
 		}
 		step {
 			name = "Linux - Cloud"
