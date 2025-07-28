@@ -1,4 +1,4 @@
-pattern {
+pattern { testsetststs
 	metadata {
 		id = "1d2810b14fa12200609b92918110c7a766"
 		name = "Linux Server"
